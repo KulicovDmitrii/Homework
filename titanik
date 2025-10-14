@@ -1,0 +1,46 @@
+import pandas as pd
+
+# Загрузка данных
+df = pd.read_csv("train.csv")
+print("Информация о датасете:")
+df.info()
+
+print("\nСтатистика по числовым столбцам:")
+print(df.describe())
+
+print("\nЧисло пропусков в каждом столбце:")
+print(df.isnull().sum())
+survival_by_class = df.groupby('Pclass')['Survived'].mean() * 100
+print("\nПроцент выживших по классам:")
+print(survival_by_class.map("{:.2f}%".format))
+# Извлечение имени из колонки Name
+df['Name'] = df['Name'].str.split(',')
+df['Surname'] = df['Name'].str[0]  # фамилия
+df['Name'] = df['Name'].str[1].str.split('.').str[1].str.strip()  # имя
+
+male_names = df[df['Sex'] == 'male']['Name']
+female_names = df[df['Sex'] == 'female']['Name']
+
+popular_male_name = male_names.value_counts().idxmax()
+popular_female_name = female_names.value_counts().idxmax()
+
+print(f"\nСамое популярное мужское имя: {popular_male_name}")
+print(f"Самое популярное женское имя: {popular_female_name}")
+print("\nСамые популярные имена по классам:")
+for pclass in df['Pclass'].unique():
+    print(f"\nКласс {pclass}:")
+    
+    male_mask = (df['Sex'] == 'male') & (df['Pclass'] == pclass)
+    female_mask = (df['Sex'] == 'female') & (df['Pclass'] == pclass)
+
+    popular_male = df.loc[male_mask, 'Name'].value_counts().idxmax()
+    popular_female = df.loc[female_mask, 'Name'].value_counts().idxmax()
+
+    print(f"Мужское имя: {popular_male}, Женское имя: {popular_female}")
+older_than_44 = df[df['Age'] > 44]
+print("\nПассажиры старше 44 лет:")
+print(older_than_44)
+cabin_counts = df.groupby('Cabin')['PassengerId'].count()
+room_distribution = cabin_counts.value_counts().sort_index()
+print("\nРаспределение кабин по числу пассажиров:")
+print(room_distribution)
