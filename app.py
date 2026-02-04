@@ -12,7 +12,7 @@ for feature in features:
     if feature == 'total_square':
         val = st.number_input("Площадь (м²)", min_value=10, max_value=1100, value=10, step=1)
     elif feature == 'rooms':
-        val = st.number_input("Количество комнат", min_value=1, max_value=10, value=2, step=1)
+        val = st.number_input("Количество комнат", min_value=1, max_value=6, value=2, step=1)
     elif feature == 'floor':
         val = st.number_input("Этаж", min_value=1, max_value=53, value=1, step=1)
     else:
@@ -22,5 +22,6 @@ for feature in features:
 if st.button("Рассчитать стоимость"):
     X_input = [[input_data[f] for f in features]]
     prediction = model.predict(X_input)[0]
+
 
     st.success(f"Прогнозируемая стоимость: **{prediction:,.0f} руб.**")
